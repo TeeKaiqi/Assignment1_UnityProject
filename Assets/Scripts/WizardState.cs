@@ -214,13 +214,13 @@ public class WizardState_RELOAD : WizardState
     {
         if (mWizard.mAttackCount > mWizard.mMaxAttackBeforeRecharge)
         {
-            mWizard.mAttacksInStaff += mWizard.mAttacksInStaff;
+            mWizard.mAttacksInStaff += mWizard.mMaxAttackBeforeRecharge;
             mWizard.mAttackCount -= mWizard.mAttacksInStaff;
         }
         else if (mWizard.mAttacksInStaff > 0 && mWizard.mAttacksInStaff < mWizard.mMaxAttackBeforeRecharge)
         {
-            mWizard.mAttacksInStaff += mWizard.mAttacksInStaff;
-            mWizard.mAttacksInStaff = 0;
+            mWizard.mAttacksInStaff += mWizard.mAttackCount;
+            mWizard.mAttackCount = 0;
         }
     }
 
