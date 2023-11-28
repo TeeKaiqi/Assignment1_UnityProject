@@ -133,39 +133,6 @@ public class WizardState_ATTACK : WizardState
     {
         base.Update();
 
-        // For Student ---------------------------------------------------//
-        // Implement the logic of attack, reload and revert to movement. 
-        //----------------------------------------------------------------//
-        // Hint:
-        //----------------------------------------------------------------//
-        // 1. Transition to RELOAD
-        // Notice that we have three variables, viz., 
-        // mAmunitionCount
-        // mBulletsInMagazine
-        // mMaxAmunitionBeforeReload
-        // You will need to make use of these variables while
-        // implementing the transition to RELOAD.
-        //
-        // 2. Staying in ATTACK state
-        // You should stay in ATTACK state as long as the 
-        // Fire buttons are pressed. During ATTACK state
-        // you should trigger the correct ATTACK animation
-        // based on which button is pressed and shoot bullets.
-        // Every bullet shot should reduce the count of mAmunitionCount
-        // and mBulletsInMagazine.
-        // Once mBulletsInMagazine reaches to 0 you should 
-        // transit to RELOAD state.
-        //
-        // 3. Transition to MOVEMENT state
-        // You should transit to MOVEMENT state when any of the 
-        // following two situations happen.
-        // First you have exhausted all your bullets, that means your
-        // mAmunitionCount is 0 or if you do not press any of the
-        // Fire buttons.
-        // Discuss with your tutor if you find any difficulties
-        // in implementing this section.        
-
-        // For tutor - start ---------------------------------------------//
         Debug.Log("Ammo count: " + mWizard.mAttackCount + ", In Magazine: " + mWizard.mAttacksInStaff);
         if (mWizard.mAttacksInStaff == 0 && mWizard.mAttackCount > 0)
         {
@@ -190,7 +157,6 @@ public class WizardState_ATTACK : WizardState
             mWizard.mAnimator.SetBool(mAttackName, false);
             mWizard.mFsm.SetCurrentState((int)WizardStateType.MOVEMENT);
         }
-        // For tutor - end   ---------------------------------------------//
     }
 }
 
@@ -217,7 +183,7 @@ public class WizardState_RELOAD : WizardState
             mWizard.mAttacksInStaff += mWizard.mMaxAttackBeforeRecharge;
             mWizard.mAttackCount -= mWizard.mAttacksInStaff;
         }
-        else if (mWizard.mAttacksInStaff > 0 && mWizard.mAttacksInStaff < mWizard.mMaxAttackBeforeRecharge)
+        else if (mWizard.mAttackCount > 0 && mWizard.mAttackCount < mWizard.mMaxAttackBeforeRecharge)
         {
             mWizard.mAttacksInStaff += mWizard.mAttackCount;
             mWizard.mAttackCount = 0;
@@ -229,7 +195,7 @@ public class WizardState_RELOAD : WizardState
         dt += Time.deltaTime;
         if (dt >= ReloadTime)
         {
-            mWizard.mFsm.SetCurrentState((int)mWizard.mAttacksInStaff);
+            mWizard.mFsm.SetCurrentState((int)WizardStateType.MOVEMENT);
         }
     }
 
