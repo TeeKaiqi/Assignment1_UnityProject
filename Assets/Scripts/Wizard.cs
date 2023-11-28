@@ -11,28 +11,29 @@ public class Wizard : MonoBehaviour
     public Animator mAnimator;
     public WizardMovement mWizardMovement;
 
-    // This is the maximum number of attacks that the player needs to shoot before recharging.
-    public int mMaxAttackBeforeRecharge = 5;
+    // This is the maximum number of bullets that the player 
+    // needs to fire before reloading.
+    public int mMaxAmunitionBeforeReload = 40;
 
     // This is the total number of bullets that the 
     // player has.
     [HideInInspector]
-    public int mAttackCount = 10;
+    public int mAmunitionCount = 100;
 
     // This is the count of bullets in the magazine.
     [HideInInspector]
-    public int mAttacksInStaff = 5;
+    public int mBulletsInMagazine = 40;
 
     [HideInInspector]
     public bool[] mAttackButtons = new bool[3];
 
-    public Transform mStaffTransform;
-    public LayerMask mWizardMask;
+    public Transform mGunTransform;
+    public LayerMask mPlayerMask;
     public Canvas mCanvas;
     public RectTransform mCrossHair;
     public AudioSource mAudioSource;
-    public AudioClip mAudioClipStaffAttack;
-    public AudioClip mAudioStaffReload;
+    public AudioClip mAudioClipGunShot;
+    public AudioClip mAudioClipReload;
 
 
     public GameObject mBulletPrefab;
@@ -48,9 +49,9 @@ public class Wizard : MonoBehaviour
         mFsm.Add(new WizardState_MOVEMENT(this));
         mFsm.Add(new WizardState_ATTACK(this));
         mFsm.Add(new WizardState_RELOAD(this));
-        mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+        mFsm.SetCurrentState((int)WizardStateType.MOVEMENT);
 
-        PlayerConstants.PlayerMask = mWizardMask;
+        PlayerConstants.PlayerMask = mPlayerMask;
     }
 
     void Update()
@@ -122,13 +123,13 @@ public class Wizard : MonoBehaviour
         // }
         //-----------------------------------------------------------------------//
 
-        Vector3 dir = -mStaffTransform.right.normalized;
+        Vector3 dir = -mGunTransform.right.normalized;
         // Find gunpoint as mentioned in the worksheet.
-        Vector3 gunpoint = mStaffTransform.transform.position +
+        Vector3 gunpoint = mGunTransform.transform.position +
                            dir * 1.2f -
-                           mStaffTransform.forward * 0.1f;
+                           mGunTransform.forward * 0.1f;
         // Fine the layer mask for objects that you want to intersect with.
-        LayerMask objectsMask = ~mWizardMask;
+        LayerMask objectsMask = ~mPlayerMask;
 
         // Do the Raycast
         RaycastHit hit;
@@ -191,7 +192,7 @@ public class Wizard : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
 
-        mAudioSource.PlayOneShot(mAudioStaffReload);
+        mAudioSource.PlayOneShot(mAudioClipReload);
     }
 
     public void Fire(int id)
@@ -206,14 +207,14 @@ public class Wizard : MonoBehaviour
     {
         if (mBulletPrefab == null) return;
 
-        Vector3 dir = -mStaffTransform.right.normalized;
-        Vector3 firePoint = mStaffTransform.transform.position + dir *
-            1.2f - mStaffTransform.forward * 0.1f;
+        Vector3 dir = -mGunTransform.right.normalized;
+        Vector3 firePoint = mGunTransform.transform.position + dir *
+            1.2f - mGunTransform.forward * 0.1f;
         GameObject bullet = Instantiate(mBulletPrefab, firePoint,
             Quaternion.LookRotation(dir) * Quaternion.AngleAxis(90.0f, Vector3.right));
 
         bullet.GetComponent<Rigidbody>().AddForce(dir * mBulletSpeed, ForceMode.Impulse);
-        mAudioSource.PlayOneShot(mAudioClipStaffAttack);
+        mAudioSource.PlayOneShot(mAudioClipGunShot);
     }
 
     IEnumerator Coroutine_Firing(int id)
@@ -222,6 +223,7 @@ public class Wizard : MonoBehaviour
         FireBullet();
         yield return new WaitForSeconds(1.0f / RoundsPerSecond[id]);
         mFiring[id] = false;
-        mAttacksInStaff -= 1;
+        mBulletsInMagazine -= 1;
     }
 }
+

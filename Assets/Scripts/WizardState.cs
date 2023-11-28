@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PGGE.Patterns;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum WizardStateType
 {
@@ -76,7 +77,7 @@ public class WizardState_MOVEMENT : WizardState
         {
             if (mWizard.mAttackButtons[i])
             {
-                if (mWizard.mAttacksInStaff > 0)
+                if (mWizard.mBulletsInMagazine > 0)
                 {
                     WizardState_ATTACK attack = (WizardState_ATTACK)mFsm.GetState((int)WizardStateType.ATTACK);
 
@@ -133,14 +134,14 @@ public class WizardState_ATTACK : WizardState
     {
         base.Update();
 
-        Debug.Log("Ammo count: " + mWizard.mAttackCount + ", In Magazine: " + mWizard.mAttacksInStaff);
-        if (mWizard.mAttacksInStaff == 0 && mWizard.mAttackCount > 0)
+        Debug.Log("Ammo count: " + mWizard.mAmunitionCount + ", In Magazine: " + mWizard.mBulletsInMagazine);
+        if (mWizard.mBulletsInMagazine == 0 && mWizard.mAmunitionCount > 0)
         {
             mWizard.mFsm.SetCurrentState((int)WizardStateType.RELOAD);
             return;
         }
 
-        if (mWizard.mAttackCount <= 0 && mWizard.mAttacksInStaff <= 0)
+        if (mWizard.mAmunitionCount <= 0 && mWizard.mBulletsInMagazine <= 0)
         {
             mWizard.mFsm.SetCurrentState((int)WizardStateType.MOVEMENT);
             mWizard.NoAmmo();
@@ -159,7 +160,6 @@ public class WizardState_ATTACK : WizardState
         }
     }
 }
-
 public class WizardState_RELOAD : WizardState
 {
     public float ReloadTime = 3.0f;
@@ -178,15 +178,15 @@ public class WizardState_RELOAD : WizardState
     }
     public override void Exit()
     {
-        if (mWizard.mAttackCount > mWizard.mMaxAttackBeforeRecharge)
-        {
-            mWizard.mAttacksInStaff += mWizard.mMaxAttackBeforeRecharge;
-            mWizard.mAttackCount -= mWizard.mAttacksInStaff;
+        if (mWizard.mAmunitionCount > mWizard.mMaxAmunitionBeforeReload)
+        {   
+            mWizard.mBulletsInMagazine += mWizard.mMaxAmunitionBeforeReload;
+            mWizard.mAmunitionCount -= mWizard.mBulletsInMagazine;
         }
-        else if (mWizard.mAttackCount > 0 && mWizard.mAttackCount < mWizard.mMaxAttackBeforeRecharge)
+        else if (mWizard.mAmunitionCount > 0 && mWizard.mAmunitionCount < mWizard.mMaxAmunitionBeforeReload)
         {
-            mWizard.mAttacksInStaff += mWizard.mAttackCount;
-            mWizard.mAttackCount = 0;
+            mWizard.mBulletsInMagazine += mWizard.mAmunitionCount;
+            mWizard.mAmunitionCount = 0;
         }
     }
 
