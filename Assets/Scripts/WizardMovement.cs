@@ -80,6 +80,9 @@ public class WizardMovement : MonoBehaviour
                 transform.rotation,
                 Quaternion.Euler(0.0f, eu.y, 0.0f),
                 mTurnRate * Time.deltaTime);
+
+            //if (mVelocity.y < 0 && )
+
         }
         else
         {
@@ -92,6 +95,8 @@ public class WizardMovement : MonoBehaviour
         mCharacterController.Move(forward * vInput * speed * Time.deltaTime);
         mAnimator.SetFloat("PosX", 0);
         mAnimator.SetFloat("PosZ", vInput * speed / (2.0f * mWalkSpeed));
+
+
     }
 
     void ApplyGravity()

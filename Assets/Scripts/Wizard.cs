@@ -10,6 +10,7 @@ public class Wizard : MonoBehaviour
     public FSM mFsm = new FSM();
     public Animator mAnimator;
     public WizardMovement mWizardMovement;
+    //public SoundManager soundManager;
 
     // This is the maximum number of bullets that the player 
     // needs to fire before reloading.
