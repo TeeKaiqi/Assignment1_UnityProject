@@ -10,13 +10,18 @@ public class Footsteps : MonoBehaviour
     private AudioClip concreteFootstep;
     [SerializeField]
     private AudioClip woodFootstep;
+    [SerializeField]
+    private AudioClip dirtFootstepRun;
+    [SerializeField]
+    private AudioClip concreteFootstepRun;
+    [SerializeField]
+    private AudioClip woodFootstepRun;
 
     private AudioSource audioSource;
     public LayerMask groundLayer;
 
     public GameObject character;
 
-    public float raycastHeightOffset = 0.1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +36,6 @@ public class Footsteps : MonoBehaviour
             string groundTag = hit.collider.gameObject.tag;
 
             Debug.Log("Raycast Hit: " + hit.collider.gameObject.name);
-            Debug.Log("Ground Tag: " + groundTag);
-            Debug.Log("Collider Position: " + hit.collider.gameObject.transform.position);
-            Debug.Log("Collider Size: " + hit.collider.bounds.size);
 
             if (groundTag == "Dirt")
             {
@@ -54,8 +56,38 @@ public class Footsteps : MonoBehaviour
         }
     }
 
+    private void StepRun()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1f, groundLayer))
+        {
+            string groundTag = hit.collider.gameObject.tag;
+
+            Debug.Log("Raycast Hit: " + hit.collider.gameObject.name);
+
+            if (groundTag == "Dirt")
+            {
+                PlayFootstepSound(dirtFootstepRun);
+            }
+            if (groundTag == "Concrete")
+            {
+                PlayFootstepSound(concreteFootstepRun);
+            }
+            if (groundTag == "Wood")
+            {
+                PlayFootstepSound(woodFootstepRun);
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast did not hit anything.");
+        }
+    }
+
     private void PlayFootstepSound(AudioClip clip)
     {
+        audioSource.volume = Random.Range(1f, 2.5f);
+        audioSource.pitch = Random.Range(0.8f, 1.8f);
         audioSource.PlayOneShot(clip);
     }
     

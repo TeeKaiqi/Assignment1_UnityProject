@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PGGE.Patterns;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 
 public enum WizardStateType
 {
